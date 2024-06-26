@@ -46,7 +46,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.musicrecognitionapp.ui.theme.MusicRecognitionAppTheme
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.tasks.await
+import androidx.compose.foundation.Image
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.sp
 
 class MainActivity : ComponentActivity() {
     private lateinit var musicRecognition: MusicRecognition
@@ -336,20 +339,41 @@ fun MainScreen(
         verticalArrangement = Arrangement.Center,
         modifier = modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
+        // Dodavanje ikone na vrh ekrana sa boljim stilom
+        Image(
+            painter = painterResource(id = R.drawable.ic_songspotter),
+            contentDescription = "SongSpotter Icon",
+            modifier = Modifier
+                .size(270.dp)  // Povećana ikona za bolju vidljivost
+                .padding(top = 32.dp, bottom = 16.dp),
+            contentScale = ContentScale.Fit
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
         if (isLoggedIn) {
-            Text(text = "Hi, $nickname", style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = "Hi, $nickname",
+                style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground),
+                fontSize = 20.sp
+            )
             Spacer(modifier = Modifier.height(16.dp))
         }
-        Text(text = resultText, modifier = Modifier.padding(bottom = 20.dp))
+        Text(
+            text = resultText,
+            style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.onBackground),
+            fontSize = 18.sp,
+            modifier = Modifier.padding(bottom = 20.dp)
+        )
         Box(contentAlignment = Alignment.Center) {
             if (isListening) {
                 Box(
                     modifier = Modifier
                         .size(200.dp)
                         .scale(scale)
-                        .background(Color(0xFF89CFF0), CircleShape)
+                        .background(MaterialTheme.colorScheme.secondary, CircleShape)
                 )
             }
             Button(onClick = {
@@ -367,7 +391,7 @@ fun MainScreen(
                     resultText = "Press the button to start recognition"
                     showNotification(context, "Recording stopped")
                 }
-            }) {
+            }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)) {
                 Text(text = if (isListening) "Stop Listening" else "Start Listening")
             }
         }
@@ -461,21 +485,5 @@ fun DefaultPreview() {
             onLogout = {},
             onLoginSuccess = {}
         )
-    }
-}
-
-@Composable
-fun LoginScreen(navController: NavController, onLoginSuccess: (String) -> Unit) {
-    // Your existing login screen code
-    // After successful login:
-    val user = FirebaseAuth.getInstance().currentUser
-    if (user != null) {
-        FirebaseFirestore.getInstance().collection("users")
-            .document(user.uid)
-            .get()
-            .addOnSuccessListener { document ->
-                val nickname = document.getString("nickname") ?: ""
-                onLoginSuccess(nickname)
-            }
     }
 }

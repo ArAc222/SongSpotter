@@ -75,6 +75,7 @@ dependencies {
     implementation("androidx.compose.animation:animation:1.5.1")
     implementation("androidx.navigation:navigation-compose:2.5.3") // Add this line
     implementation("io.coil-kt:coil-compose:2.0.0")
+    implementation ("com.google.android.material:material:1.6.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -11,7 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
-fun LoginScreen(navController: NavController, onLoginSuccess: () -> Unit) {
+fun LoginScreen(navController: NavController, onLoginSuccess: (String) -> Unit) {
     var nickname by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf<String?>(null) }
@@ -50,7 +50,7 @@ fun LoginScreen(navController: NavController, onLoginSuccess: () -> Unit) {
                                 .signInWithEmailAndPassword(email, password)
                                 .addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
-                                        onLoginSuccess()
+                                        onLoginSuccess(nickname)
                                         navController.navigate("main") {
                                             popUpTo(navController.graph.startDestinationId) {
                                                 inclusive = true
